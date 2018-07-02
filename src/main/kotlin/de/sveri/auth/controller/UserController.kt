@@ -1,10 +1,9 @@
 package de.sveri.auth.controller
 
 import de.sveri.auth.models.User
-import de.sveri.auth.models.UserDao
 import de.sveri.auth.models.repository.UserRepository
-import javax.ws.rs.NotFoundException
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import javax.ws.rs.Produces
@@ -23,4 +22,22 @@ class UserController constructor(val userRepository: UserRepository) {
 
     @PostMapping("/")
     fun createUser(@Valid @RequestBody user: User): User = userRepository.save(user)
+
+    @PutMapping("/{id}")
+    fun updateUser(@PathVariable("id") id: Long,
+                   @Valid @RequestBody user: User) {
+        userRepository.findById(id).map { oldUser ->
+            val updatedUser = oldUser.copy(userName = user.userName, email = user.email)
+            ResponseEntity.ok().body(userRepository.save(updatedUser))
+        }.orElse(ResponseEntity.notFound().build())
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteUser(@PathVariable("id") id: Long): ResponseEntity<Void> {
+        return userRepository.findById(id).map { user ->
+            userRepository.delete(user)
+            ResponseEntity<Void>(HttpStatus.OK)
+
+        }.orElse(ResponseEntity.notFound().build())
+    }
 }
