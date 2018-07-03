@@ -12,7 +12,7 @@ import javax.ws.rs.Produces
 @RestController
 @RequestMapping("/user")
 @Produces("application/json")
-class UserController constructor(val userRepository: UserRepository) {
+class UserRestController constructor(val userRepository: UserRepository) {
 
     @RequestMapping(path = arrayOf("/{id}"), method = arrayOf(RequestMethod.GET))
     fun getUser(@PathVariable("id") id: Long): User {
