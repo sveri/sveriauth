@@ -1,18 +1,41 @@
 package de.sveri.auth.controller
 
+import de.sveri.auth.helper.JwtHelper
 import de.sveri.auth.models.User
 import de.sveri.auth.models.repository.UserRepository
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import javax.ws.rs.Produces
+import org.springframework.beans.factory.annotation.Autowired
+import java.util.*
+
+
+data class LoginUser(val userName: String, val password: String)
+
+data class ReturnUser(val userName: String, val token: String)
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @Produces("application/json")
 class UserRestController constructor(val userRepository: UserRepository) {
+
+    @Autowired
+    private val jwtHelper: JwtHelper? = null
+
+    @PostMapping("/login")
+    fun login(@RequestBody user: LoginUser): ReturnUser {
+
+        val token = Jwts.builder().setSubject(user.userName)
+                .setIssuedAt(Date())
+                .signWith(SignatureAlgorithm.HS256, jwtHelper?.secretKey).compact()
+
+        return ReturnUser(user.userName, token)
+    }
 
     @RequestMapping(path = arrayOf("/{id}"), method = arrayOf(RequestMethod.GET))
     fun getUser(@PathVariable("id") id: Long): User {

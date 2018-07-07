@@ -1,0 +1,3 @@
+app:
+  jwt:
+    secretKey: ${random.value}
