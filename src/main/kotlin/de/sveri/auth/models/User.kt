@@ -1,7 +1,13 @@
 package de.sveri.auth.models
 
-import javax.persistence.*
+import de.sveri.auth.controller.SignupUser
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 import javax.validation.constraints.NotBlank
+
 
 @Entity
 data class User(
@@ -9,11 +15,20 @@ data class User(
         val id: Long = 0,
 
         @get: NotBlank
-        val userName: String = "",
+        val userName: String,
 
-        val email: String = ""
+        val password: String
+
 )
 
+fun fromSignupUser(user: SignupUser): User {
+    return User(userName = user.userName, password = encryptPassword(user.password))
+}
+
+fun encryptPassword(password: String): String {
+    val passwordEncoder = BCryptPasswordEncoder()
+    return passwordEncoder.encode(password)
+}
 
 
 //data class User(val id: String)
