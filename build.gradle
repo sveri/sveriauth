@@ -51,6 +51,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-jersey')
 	compile('org.springframework.boot:spring-boot-starter-mail')
     compile('org.springframework.boot:spring-boot-starter-security')
+    compile("org.springframework.boot:spring-boot-starter-web")
 	compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 	compile('de.codecentric:spring-boot-admin-starter-server')
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -64,6 +65,7 @@ dependencies {
 	runtime('org.postgresql:postgresql')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile 'io.rest-assured:rest-assured:3.1.0'
 }
 
 dependencyManagement {

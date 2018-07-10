@@ -12,23 +12,21 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import javax.ws.rs.Produces
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.Errors
 import java.util.*
-import javax.validation.constraints.AssertTrue
-import javax.validation.constraints.Email
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
+import javax.validation.constraints.*
 
 
 data class LoginUser(val userName: String, val password: String)
 
 data class SignupUser(
-        @NotNull @Email val userName: String,
+        @field:Size(min = 3) val userName: String,
 
-        @NotNull @Min(6) val password: String,
+        @field:Size(min = 6) val password: String,
 
-        @NotNull @Min(6) val password_confirm: String,
+        @field:Size(min = 6)  val password_confirm: String,
 
-        @NotNull @AssertTrue val checkbox: Boolean)
+        @field:AssertTrue val tosAccepted: Boolean)
 
 data class ReturnUser(val userName: String, val token: String)
 
@@ -41,21 +39,27 @@ class UserRestController constructor(val userRepository: UserRepository) {
     @Autowired
     private val jwtHelper: JwtHelper? = null
 
-    @PostMapping("/login")
-    fun login(@RequestBody user: LoginUser): ReturnUser {
+    @PostMapping("/signup")
+    fun signup(@Valid @RequestBody signupUser: SignupUser): ReturnUser {
+//    fun signup(@Valid @RequestBody signupUser: SignupUser): ResponseEntity<Any> {
+//    fun signup(@Valid @RequestBody signupUser: SignupUser, errors: Errors): ResponseEntity<Any> {
 
-        val token = Jwts.builder().setSubject(user.userName)
+//        val user = fromSignupUser(signupUser)
+//        userRepository.save(user)
+//        if(errors.hasErrors()){
+//            return ResponseEntity.badRequest().body(errors.allErrors)
+//        }
+
+        val token = Jwts.builder().setSubject(signupUser.userName)
                 .setIssuedAt(Date())
                 .signWith(SignatureAlgorithm.HS256, jwtHelper?.secretKey).compact()
 
-        return ReturnUser(user.userName, token)
+//        return ResponseEntity.ok().body(ReturnUser(signupUser.userName, token))
+        return ReturnUser(signupUser.userName, token)
     }
 
-    @PostMapping("/signup")
-    fun signup(@Valid @RequestBody user: SignupUser): ReturnUser {
-
-        val fromSignupUser = fromSignupUser(user)
-//        userRepository.save(fromSignupUser)
+    @PostMapping("/login")
+    fun login(@RequestBody user: LoginUser): ReturnUser {
 
         val token = Jwts.builder().setSubject(user.userName)
                 .setIssuedAt(Date())
