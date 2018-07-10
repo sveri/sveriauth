@@ -47,6 +47,7 @@ class UserRestControllerTest : RestAssuredConfig() {
         expectBadRequest(SignupUser("username", "passw", "password", true))
         expectBadRequest(SignupUser("username", "password", "pasd", true))
         expectBadRequest(SignupUser("username", "password", "pasasldkfjd", false))
+        expectBadRequest(SignupUser("username", "password", "password2", true))
     }
 
 

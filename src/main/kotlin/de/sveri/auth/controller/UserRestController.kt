@@ -4,6 +4,7 @@ import de.sveri.auth.helper.JwtHelper
 import de.sveri.auth.models.User
 import de.sveri.auth.models.fromSignupUser
 import de.sveri.auth.models.repository.UserRepository
+import de.sveri.auth.validator.EqualFields
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.http.HttpStatus
@@ -19,6 +20,8 @@ import javax.validation.constraints.*
 
 data class LoginUser(val userName: String, val password: String)
 
+@EqualFields(baseField = "password", matchField = "password_confirm")
+//@EqualFields
 data class SignupUser(
         @field:Size(min = 3) val userName: String,
 
