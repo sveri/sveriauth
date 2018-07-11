@@ -9,14 +9,18 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
 
+enum class RestErrorTypes {VALIDATION}
+
+data class RestError(val type: RestErrorTypes, val error: MutableList<FieldError>)
+
 @ControllerAdvice
 class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handle(exception: MethodArgumentNotValidException): MutableList<FieldError> {
-        return exception.bindingResult.fieldErrors
+    fun handle(exception: MethodArgumentNotValidException): RestError {
+        return RestError(RestErrorTypes.VALIDATION, exception.bindingResult.fieldErrors)
     }
 
 

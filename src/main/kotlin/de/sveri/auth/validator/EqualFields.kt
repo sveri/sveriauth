@@ -10,7 +10,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 
 
-//@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [PasswordsEqualConstraintValidator::class])

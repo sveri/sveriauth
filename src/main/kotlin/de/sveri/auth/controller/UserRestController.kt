@@ -2,7 +2,6 @@ package de.sveri.auth.controller
 
 import de.sveri.auth.helper.JwtHelper
 import de.sveri.auth.models.User
-import de.sveri.auth.models.fromSignupUser
 import de.sveri.auth.models.repository.UserRepository
 import de.sveri.auth.validator.EqualFields
 import io.jsonwebtoken.Jwts
@@ -44,20 +43,14 @@ class UserRestController constructor(val userRepository: UserRepository) {
 
     @PostMapping("/signup")
     fun signup(@Valid @RequestBody signupUser: SignupUser): ReturnUser {
-//    fun signup(@Valid @RequestBody signupUser: SignupUser): ResponseEntity<Any> {
-//    fun signup(@Valid @RequestBody signupUser: SignupUser, errors: Errors): ResponseEntity<Any> {
 
-//        val user = fromSignupUser(signupUser)
-//        userRepository.save(user)
-//        if(errors.hasErrors()){
-//            return ResponseEntity.badRequest().body(errors.allErrors)
-//        }
+        val user = User.fromSignupUser(signupUser)
+        userRepository.save(user)
 
         val token = Jwts.builder().setSubject(signupUser.userName)
                 .setIssuedAt(Date())
                 .signWith(SignatureAlgorithm.HS256, jwtHelper?.secretKey).compact()
 
-//        return ResponseEntity.ok().body(ReturnUser(signupUser.userName, token))
         return ReturnUser(signupUser.userName, token)
     }
 
